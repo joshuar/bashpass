@@ -42,11 +42,11 @@ if [[ -z $dictionary_file ]] && [[ -n $LANG ]]; then
     fi
 fi
 
+# Breakdown of grep expressions:
+#  '^[[:alpha:]]{4,8}$' : only show lines with between 4 to 8 alphabetical characters
 # Breakdown of sed expressions:
-#   's/\/.*//g' : remove the trailing /blah where matched
-#   '/^.\{1,3\}$/d' : remove words with three or less characters
-#   "/'/d" : remove words containing ' (this may pose a problem for some languages)
-words=($(sed -e 's/\/.*//g' -e '/^.\{1,2\}$/d' -e "/'/d" $dictionary_file | shuf -n ${word_count:-3}))
+#  's/\/.*//g' : remove the trailing /blah where matched
+words=($(grep -E '^[[:alpha:]]{4,8}$' $dictionary_file | sed -e 's/\/.*//g' | shuf -n ${word_count:-3}))
 
 for i in "${words[@]}"; do
     if [[ ${i} != ${words[$((${#words[*]} - 1))]} ]]; then

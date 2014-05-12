@@ -7,8 +7,9 @@ generate easy to remember but hard to crack passwords.
 ## Requirements ##
 
 * GNU sed
+* GNU grep
 * GNU coreutils
-* Bash version 4+
+* Bash
 * A myspell dictionary file (usually installed with the hunspell
   package of your Linux distribution) *or* your own word list file.
 
