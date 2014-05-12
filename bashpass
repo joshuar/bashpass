@@ -1,0 +1,59 @@
+#/usr/bin/env bash
+
+declare word_count dictionary_file
+declare separators=( '-' '_' '!' '@' '&' '*' '+' '=' '1' '2' '3' '4' '5' '6' '7' '8' '9' '0' )
+declare n_separators=${#separators[*]}
+
+while getopts ":n:d:" opt; do
+    case $opt in
+        n)
+            if (( $OPTARG > 0 )); then
+                word_count=$OPTARG
+            else
+                echo "Argument to -${opt} should be an integer."
+                exit -1
+            fi
+            ;;
+        d)
+            if [[ -r $OPTARG ]]; then
+                dictionary_file=$OPTARG
+            else
+                echo "Argument to -${opt} should be the path to a readable file."
+                exit -1
+            fi
+            ;;
+        \?)
+            echo "Invalid option: -$OPTARG" >&2
+            ;;
+  esac
+done
+
+# if no word list file was specified with -d, attempt to
+# use a myspell dictionary file in the user's language
+if [[ -z $dictionary_file ]] && [[ -n $LANG ]]; then
+    dictionary_file=/usr/share/myspell/${LANG/%.*/}.dic
+    if [[ ! -r $dictionary_file ]]; then
+        echo "Was attempting to use words from ${dictionary_file}."
+        echo "but this file does does not exist or cannot be read."
+        echo
+        echo "Try specifying a valid path to a file containg a list of words"
+        echo "with the -d option."
+        exit -1
+    fi
+fi
+
+# Breakdown of sed expressions:
+#   's/\/.*//g' : remove the trailing /blah where matched
+#   '/^.\{1,3\}$/d' : remove words with three or less characters
+#   "/'/d" : remove words containing ' (this may pose a problem for some languages)
+words=($(sed -e 's/\/.*//g' -e '/^.\{1,2\}$/d' -e "/'/d" $dictionary_file | shuf -n ${word_count:-3}))
+
+for i in "${words[@]}"; do
+    if [[ ${i} != ${words[$((${#words[*]} - 1))]} ]]; then
+        echo -n $i${separators[$((RANDOM%n_separators))]}
+    else
+        echo -n $i
+    fi
+done
+
+exit 0
