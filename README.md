@@ -32,6 +32,8 @@ character but this can also be changed.
 * `-d` : path to a word list file to use to generate the password.
   Defaults to the myspell dictionary of the running shell's locale
   (using the **LANG** environment variable).
+* `-b` : *bracketize* the words in the password (i.e., put a random
+  set of brackets around each of the words).
 
 ### Using your own word list ###
 

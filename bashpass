@@ -1,10 +1,13 @@
 #/usr/bin/env bash
 
-declare word_count dictionary_file
-declare separators=( '-' '_' '!' '@' '&' '*' '+' '=' '1' '2' '3' '4' '5' '6' '7' '8' '9' '0' )
-declare n_separators=${#separators[*]}
+declare -a separators=( '-' '_' '!' '@' '&' '*' '+' '=' \
+    '~' '`' '#' '%' '^' '+'
+    '1' '2' '3' '4' '5' '6' '7' '8' '9' '0' )
+declare -a start_brackets=( '(' '{' '[' '<' )
+declare -a end_brackets=( ')' '}' ']' '>' )
 
-while getopts ":n:d:" opt; do
+bracketize=0
+while getopts ":n:d:b" opt; do
     case $opt in
         n)
             if (( $OPTARG > 0 )); then
@@ -21,6 +24,9 @@ while getopts ":n:d:" opt; do
                 echo "Argument to -${opt} should be the path to a readable file."
                 exit -1
             fi
+            ;;
+        b)
+            bracketize=1
             ;;
         \?)
             echo "Invalid option: -$OPTARG" >&2
@@ -48,12 +54,22 @@ fi
 #  's/\/.*//g' : remove the trailing /blah where matched
 words=($(grep -E '^[[:alpha:]]{4,8}$' $dictionary_file | sed -e 's/\/.*//g' | shuf -n ${word_count:-3}))
 
-for i in "${words[@]}"; do
-    if [[ ${i} != ${words[$((${#words[*]} - 1))]} ]]; then
-        echo -n $i${separators[$((RANDOM%n_separators))]}
+for word in "${words[@]}"; do
+    if (( $bracketize == 1 )); then
+        b=$((RANDOM%${#start_brackets[*]}))
+        password=$password${start_brackets[$b]}$word${end_brackets[$b]}
+        unset b
     else
-        echo -n $i
+        password=$password$word
+    fi
+    if [[ ${word} != ${words[$((${#words[*]} - 1))]} ]]; then
+        s=$((RANDOM%${#separators[*]}))
+        password=$password${separators[s]}
+        unset s
     fi
 done
+
+echo -n $password
+unset password
 
 exit 0
