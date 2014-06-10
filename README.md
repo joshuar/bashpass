@@ -34,6 +34,8 @@ character but this can also be changed.
   (using the **LANG** environment variable).
 * `-b` : *bracketize* the words in the password (i.e., put a random
   set of brackets around each of the words).
+* `-s` : *surround* the password with extra symbol characters (i.e.,
+  add a symbol on the front and end of the password).
 
 ### Using your own word list ###
 

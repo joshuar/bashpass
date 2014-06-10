@@ -7,7 +7,9 @@ declare -a start_brackets=( '(' '{' '[' '<' )
 declare -a end_brackets=( ')' '}' ']' '>' )
 
 bracketize=0
-while getopts ":n:d:b" opt; do
+surround=0
+
+while getopts ":n:d:bs" opt; do
     case $opt in
         n)
             if (( $OPTARG > 0 )); then
@@ -27,6 +29,9 @@ while getopts ":n:d:b" opt; do
             ;;
         b)
             bracketize=1
+            ;;
+        s)
+            surround=1
             ;;
         \?)
             echo "Invalid option: -$OPTARG" >&2
@@ -68,6 +73,13 @@ for word in "${words[@]}"; do
         unset s
     fi
 done
+
+if (( $surround == 1 )); then
+        s1=$((RANDOM%${#separators[*]}))
+        s2=$((RANDOM%${#separators[*]}))
+        password=${separators[s1]}$password${separators[s2]}
+        unset s1 s2
+fi
 
 echo -n $password
 unset password
