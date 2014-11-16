@@ -43,7 +43,6 @@ other variants that bashpass can generate.
   like *(Catullus)8{Chomsky}%(Bremen)*.
 * `-v` : *replace vowels* any vowels in each word are replaced by
   random punctuation marks.
-  like *(Catullus)8{Chomsky}%(Bremen)*.
 * `-s` : *surround* the password with extra symbol characters (i.e.,
   add a symbol on the front and end of the password). This generates
   passwords like *0budded$snugger+uppity%*.
