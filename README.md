@@ -41,11 +41,14 @@ other variants that bashpass can generate.
 * `-b` : *bracketize* the words in the password (i.e., put a random
   set of brackets around each of the words). This generates passwords
   like *(Catullus)8{Chomsky}%(Bremen)*.
+* `-v` : *replace vowels* any vowels in each word are replaced by
+  random punctuation marks.
+  like *(Catullus)8{Chomsky}%(Bremen)*.
 * `-s` : *surround* the password with extra symbol characters (i.e.,
   add a symbol on the front and end of the password). This generates
   passwords like *0budded$snugger+uppity%*.
 
-The `-b` and `-s` options can be combined.
+The `-b`, `-v` and `-s` options can be combined.
 
 ### Using your own word list ###
 
