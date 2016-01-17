@@ -1,4 +1,4 @@
-#/usr/bin/env bash
+#!/usr/bin/env bash
 
 declare -a separators=( '-' '_' '!' '@' '&' '*' '+' '=' \
     '~' '`' '#' '%' '^' '+' ' ' \
@@ -14,9 +14,9 @@ replace_vowels() {
     local _w=$1
     local _vsubs=( '$' '%' '#' '@' '&' '*' )
     for v in a e i o u; do
-        v_caps=$(echo $v | tr [[:lower:]] [[:upper:]])
+        v_caps=$(echo $v | tr '[:lower:]' '[:upper:]')
         s=$((RANDOM%${#_vsubs[*]}))
-        _w=$(echo $_w | tr ["$v$v_caps"] "${_vsubs[s]}")
+        _w=$(echo "$_w" | tr ["$v$v_caps"] "${_vsubs[s]}")
         unset s
     done
     echo "$_w"
@@ -49,7 +49,7 @@ surround() {
 while getopts ":n:d:bsv" opt; do
     case $opt in
         n)
-            if (( $OPTARG > 0 )); then
+            if (( OPTARG > 0 )); then
                 word_count=$OPTARG
             else
                 echo "Argument to -${opt} should be an integer."
@@ -97,13 +97,13 @@ fi
 #  '^[[:alpha:]]{4,8}$' : only show lines with between 4 to 8 alphabetical characters
 # Breakdown of sed expressions:
 #  's/\/.*//g' : remove the trailing /blah where matched
-words=($(grep -E '^[[:alpha:]]{4,8}$' $dictionary_file | sed -e 's/\/.*//g' | shuf -n ${word_count:-3}))
+words=($(grep -E '^[[:alpha:]]{4,8}$' "${dictionary_file}" | sed -e 's/\/.*//g' | shuf -n "${word_count:-3}"))
 
 for word in "${words[@]}"; do
     orig_word=$word
     # Do manipulations based on command-line parameters
-    (( $replacevowels == 1 )) && word=$(replace_vowels $word)
-    (( $bracketize == 1 )) && word=$(bracketize_word $word)
+    (( replacevowels == 1 )) && word=$(replace_vowels "${word}")
+    (( bracketize == 1 )) && word=$(bracketize_word "${word}")
     # If this word is not the last word in the password, add
     # a separator
     if [[ ${orig_word} != ${words[$((${#words[*]} - 1))]} ]]; then
@@ -116,9 +116,9 @@ done
 
 # If -s (surround) command-line option passed,
 # surround the password with extra separators
-(( $surround == 1 )) && password=$(surround $password)
+(( surround == 1 )) && password=$(surround "${password}")
 
-echo -n $password
+echo -n "${password}"
 echo
 unset password
 
