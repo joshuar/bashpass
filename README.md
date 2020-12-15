@@ -1,4 +1,6 @@
-# bashpass #
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
+# bashpass 
 
 A strong password generator written in Bash. Inspired by OpenWall's
 pwqgen utility, part of the **passwdqc** toolkit.  It tries to
